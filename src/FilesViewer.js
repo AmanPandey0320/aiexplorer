@@ -17,7 +17,7 @@ const shell = electron.shell;
 
 export const FilesViewer = ({files, onBack, onOpen, path}) => {
       const {pathe,setPath} = useContext(FileContext);
-      console.log(pathe);
+      console.log(shell);
       const openFile=(nome)=>{
          try{ shell.openPath(path+'/'+ nome);}
          catch(err){
