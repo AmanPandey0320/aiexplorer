@@ -1,5 +1,11 @@
 import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
 import { deleteFile, unlinkFile } from "./contextMenuActions";
+import { FcFolder,FcFile } from "react-icons/fc";
+import { VscJson } from 'react-icons/vsc';
+import { SiJavascript } from 'react-icons/si'
+import Grid from '@material-ui/core/Grid';
+import useStyles from './styles/fileView.style';
+import Paper from '@material-ui/core/Paper'
 const electron = window.require('electron');
 const shell = electron.shell;
 export const FilesViewer = ({files, onBack, onOpen, path}) => {
@@ -40,49 +46,69 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
         }
     }
 
+    const classes = useStyles();
 
-    return (<table>
-        <tbody>
-            <tr onClick={onBack}>
-                <td>Back</td>
-            </tr>
-            {
-                files.map(({name, directory, size,type})=> {
-                    return (
+    const renderIconSwitch = (type) => {
+        switch (type) {
+            case "application/javascript":return(<SiJavascript color="#fce703" size="4em"/>)
+            case "application/json": return <VscJson color="#02ccf5" size="4em"/>
+        
+            default: return(<FcFile size="4em"/>)
+        }
+    }
 
-//                         <tr onClick={()=>directory?onOpen(name):openFile(name)}>
-//                             <td>{name}</td>
-//                             <td>{size}</td>
-//                            { !directory && <td>{type}</td>}
-//                         </tr>
 
-                        <>
-                        <ContextMenuTrigger id={name+directory+size}>
-                            <tr onClick={()=>directory?onOpen(name):openFile(name)}>
-                                <td>{name}</td>
-                                <td>{size}</td>
-                                { !directory && <td>{type}</td>}
-                            </tr>
-                        </ContextMenuTrigger>
-                        <ContextMenu id={name+directory+size}>
-                            <MenuItem onClick={()=>{handleAction('copy',name)}}>
-                                Copy
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleAction('move',name)}>
-                                Move
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleAction('rename',name)}>
-                                Rename
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleAction('delete',name)}>
-                                Delete
-                            </MenuItem>
-                        </ContextMenu>
-                        </>
+    return (
+        <div className={classes.main}> 
+            <Grid  container xs={12} spacing={3}>
+                    {
+                        files.map(({name, directory, size,type})=> {
+                            return (
 
-                    )
-                })
-            }
-        </tbody>
-    </table>)
+        //                         <tr onClick={()=>directory?onOpen(name):openFile(name)}>
+        //                             <td>{name}</td>
+        //                             <td>{size}</td>
+        //                            { !directory && <td>{type}</td>}
+        //                         </tr>
+
+                                <>
+                                <ContextMenuTrigger id={name+directory+size}>
+                                    <Grid className={classes.item} onClick={()=>directory?onOpen(name):openFile(name)} item xs={3} >
+                                        <div className={classes.folderic}>
+                                            {directory && <FcFolder size="4em" />}
+                                            {!directory && <div>
+                                                {
+                                                    renderIconSwitch(type)
+                                                }
+                                            </div> }
+                                        </div>
+                                        <div className={classes.name} >{name}</div>
+                                        
+                                    </Grid>
+                                </ContextMenuTrigger>
+                                <ContextMenu id={name+directory+size}>
+                                    <Paper>
+                                    <MenuItem onClick={()=>{handleAction('copy',name)}}>
+                                        Copy
+                                    </MenuItem>
+                                    <MenuItem onClick={()=>handleAction('move',name)}>
+                                        Move
+                                    </MenuItem>
+                                    <MenuItem onClick={()=>handleAction('rename',name)}>
+                                        Rename
+                                    </MenuItem>
+                                    <MenuItem onClick={()=>handleAction('delete',name)}>
+                                        Delete
+                                    </MenuItem>
+                                    </Paper>
+                                </ContextMenu>
+                                </>
+
+                            )
+                        })
+                    }
+                
+            </Grid>
+    </div>
+    )
 }

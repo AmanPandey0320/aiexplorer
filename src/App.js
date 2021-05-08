@@ -1,8 +1,9 @@
 import './App.css';
 import React, {useState, useMemo} from 'react';
-import { FilesViewer } from './FilesViewer';
+// import { FilesViewer } from './FilesViewer';
 import { searchFilter } from './search';
 import TopBar from './components/topbar';
+import FilesViewer from './fileMain'
 const mime=window.require('mime')
 const fs = window.require('fs')
 const pathModule = window.require('path')
@@ -50,7 +51,8 @@ function App() {
   return (
     <div className="App">
       <TopBar path={path} onBack={onBack} searchString={searchString} setSearchString={setSearchString}/>
-      <FilesViewer files={filteredFiles} onBack={onBack} onOpen={onOpen}/>
+      <br/>
+      <FilesViewer files={filteredFiles} path={path} onBack={onBack} onOpen={onOpen}/>
     </div>
   );
 }
