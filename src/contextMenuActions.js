@@ -1,16 +1,21 @@
-const fs = require('fs')
+import { FileContext } from "./fileContext";
+import React,{useContext} from 'react'
+
+
+const fs = window.require('fs')
 export const renameFile = (path, newPath) => 
   new Promise((res, rej) => {
-    fs.rename(path, newPath, (err, data) =>
-      err
+
+    fs.rename(path, newPath, (err, data) =>{
+      return err
         ? rej(err)
-        : res(data));
+        : res(data);}) 
   });
 
-export const copyFile = (path, newPath, flags) =>
+export const copyFile = (path, newPath) =>
   new Promise((res, rej) => {
     const readStream = fs.createReadStream(path),
-    writeStream = fs.createWriteStream(newPath, {flags});
+    writeStream = fs.createWriteStream(newPath);
     readStream.on("error", rej);
     writeStream.on("error", rej);
     writeStream.on("finish", res);
@@ -19,10 +24,12 @@ export const copyFile = (path, newPath, flags) =>
 
 export const unlinkFile = path => {
   return new Promise((res, rej) => {
-    fs.unlink(path, (err, data) =>
-      err
+    fs.unlink(path, (err, data) =>{
+
+     return err
         ? rej(err)
-        : res(data));
+        : res(data)});
+       
   });
 }
 
