@@ -1,9 +1,11 @@
 import './App.css';
 import React, {useState, useMemo} from 'react';
 import { FilesViewer } from './FilesViewer';
+import { searchFilter } from './search';
 const fs = window.require('fs')
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
+
 
 const formatSize = (size) => {
   var i = Math.floor(Math.log(size)/Math.log(1024))
@@ -37,7 +39,8 @@ function App() {
   }
 
   const [searchString, setSearchString] = useState('');
-  const filteredFiles = files.filter(s=>s.name.startsWith(searchString))
+  const filteredFiles = files.filter(s=>searchFilter(s.name,searchString))
+  
   return (
     <div className="App">
       {path}
