@@ -2,7 +2,9 @@ import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
 import { deleteFile, unlinkFile } from "./contextMenuActions";
 import { FcFolder,FcFile } from "react-icons/fc";
 import { VscJson } from 'react-icons/vsc';
-import { SiJavascript } from 'react-icons/si'
+import { SiJavascript } from 'react-icons/si';
+import { AiFillFileMarkdown } from 'react-icons/ai'
+import Icons from './styles/icons'
 import Grid from '@material-ui/core/Grid';
 import useStyles from './styles/fileView.style';
 import Paper from '@material-ui/core/Paper'
@@ -49,18 +51,47 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
     const classes = useStyles();
 
     const renderIconSwitch = (type) => {
-        switch (type) {
-            case "application/javascript":return(<SiJavascript color="#fce703" size="4em"/>)
-            case "application/json": return <VscJson color="#02ccf5" size="4em"/>
-        
-            default: return(<FcFile size="4em"/>)
+
+        if(type === null) return Icons.file;
+
+        const sup_type = type.split('/')[0];
+        const sub_type = type.split('/')[1];
+
+        if(sup_type === 'application' ){
+
+            switch (sub_type) {
+                case "javascript": return Icons.js
+                case "json": return Icons.json
+                case "vnd.openxmlformats-officedocument.wordprocessingml.document" : return Icons.docx
+            
+                default: return Icons.file
+            }
+
+        }else if( sup_type === 'audio' ){
+            return Icons.audio
+        }else if( sup_type === 'image' ){
+            return Icons.img
+
+        }else if( sup_type === 'text' ){
+            switch (sub_type) {
+                case "markdown" : return Icons.md
+                case "x-c": return Icons.cpp
+            
+                default:return Icons.text
+            }
+
+        }else if( sup_type === 'video' ){
+            return Icons.video
+        }else{
+            return Icons.file
         }
+        
     }
 
 
     return (
         <div className={classes.main}> 
-            <Grid  container xs={12} spacing={3}>
+            <Grid  container xs={12}>
                     {
                         files.map(({name, directory, size,type})=> {
                             return (
@@ -71,11 +102,11 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
         //                            { !directory && <td>{type}</td>}
         //                         </tr>
 
-                                <>
+                                <Grid className={classes.item}>
                                 <ContextMenuTrigger id={name+directory+size}>
-                                    <Grid className={classes.item} onClick={()=>directory?onOpen(name):openFile(name)} item xs={3} >
+                                    <div onClick={()=>directory?onOpen(name):openFile(name)} item xs={3} >
                                         <div className={classes.folderic}>
-                                            {directory && <FcFolder size="4em" />}
+                                            {directory && Icons.folder}
                                             {!directory && <div>
                                                 {
                                                     renderIconSwitch(type)
@@ -83,8 +114,9 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                                             </div> }
                                         </div>
                                         <div className={classes.name} >{name}</div>
+                                    
                                         
-                                    </Grid>
+                                    </div>
                                 </ContextMenuTrigger>
                                 <ContextMenu id={name+directory+size}>
                                     <Paper>
@@ -102,7 +134,7 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                                     </MenuItem>
                                     </Paper>
                                 </ContextMenu>
-                                </>
+                                </Grid>
 
                             )
                         })
