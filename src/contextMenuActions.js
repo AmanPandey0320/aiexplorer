@@ -1,10 +1,15 @@
+import { FileContext } from "./fileContext";
+import React,{useContext} from 'react'
+
+
 const fs = window.require('fs')
 export const renameFile = (path, newPath) => 
   new Promise((res, rej) => {
-    fs.rename(path, newPath, (err, data) =>
-      err
+
+    fs.rename(path, newPath, (err, data) =>{
+      return err
         ? rej(err)
-        : res(data));
+        : res(data);}) 
   });
 
 export const copyFile = (path, newPath) =>
@@ -19,10 +24,12 @@ export const copyFile = (path, newPath) =>
 
 export const unlinkFile = path => {
   return new Promise((res, rej) => {
-    fs.unlink(path, (err, data) =>
-      err
+    fs.unlink(path, (err, data) =>{
+
+     return err
         ? rej(err)
-        : res(data));
+        : res(data)});
+       
   });
 }
 

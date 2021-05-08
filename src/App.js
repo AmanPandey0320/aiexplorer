@@ -1,7 +1,8 @@
 import './App.css';
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo,useContext,useEffect} from 'react';
 import { FilesViewer } from './FilesViewer';
 import { searchFilter } from './search';
+import { FileContext } from "./fileContext";
 
 
 
@@ -23,6 +24,8 @@ const formatSize = (size) => {
 
 function App() {
   const [path, setPath] = useState(app.getAppPath());
+  const {togle} =  useContext(FileContext);
+ 
   const files = useMemo(()=>fs.readdirSync(path).map((file) => {
     const stats = fs.statSync(pathModule.join(path, file))
     return {
@@ -38,7 +41,7 @@ function App() {
     }
     return a.directory ? -1:1
   })
-  ,[path])
+  ,[path,togle])
 
   const onBack = () => {
     setPath(pathModule.dirname(path))
