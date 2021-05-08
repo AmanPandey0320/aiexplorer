@@ -1,13 +1,9 @@
 import './App.css';
 import React, {useState, useMemo} from 'react';
 import { FilesViewer } from './FilesViewer';
-
-const fs = window.require('fs-extra')
-const mime=window.require('mime')
-
 import { searchFilter } from './search';
 import TopBar from './components/topbar';
-
+const mime=window.require('mime')
 const fs = window.require('fs')
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
