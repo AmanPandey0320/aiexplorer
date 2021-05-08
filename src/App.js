@@ -1,15 +1,11 @@
 import './App.css';
 import React, {useState, useMemo} from 'react';
-import { FilesViewer } from './FilesViewer';
+// import { FilesViewer } from './FilesViewer';
 import { searchFilter } from './search';
-
-
-
-const fs = window.require('fs-extra')
+import TopBar from './components/topbar';
+import FilesViewer from './fileMain'
 const mime=window.require('mime')
-
-
-
+const fs = window.require('fs')
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
 
@@ -57,11 +53,9 @@ function App() {
 
     
     <div className="App">
-      {path}
-      <input value={searchString} onChange={e => setSearchString(e.target.value)}/>
-
+      <TopBar path={path} onBack={onBack} searchString={searchString} setSearchString={setSearchString}/>
+      <br/>
       <FilesViewer files={filteredFiles} path={path} onBack={onBack} onOpen={onOpen}/>
-
     </div>
    
   );
