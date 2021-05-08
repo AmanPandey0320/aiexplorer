@@ -1,19 +1,39 @@
-export const FilesViewer = ({files, onBack, onOpen}) => {
+import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
+import { deleteFile, unlinkFile } from "./contextMenuActions";
 
-    const openFile = (name) => {
-        alert(name)
-    }
-    const handleClick = (e,name,directory) => {
 
-        alert('click type',e.type)
-        if(e.type === 'click') {
-            alert('left click')
-            directory? onOpen(name):openFile(name)
-        }
-        else if(e.type === 'contextmenu'){
-            alert('right click')
+export const FilesViewer = ({files, onBack, onOpen, path}) => {
+
+    const handleAction = (action,name) => {
+        switch(action){
+            case 'copy':{
+                alert(action)
+                break;
+            }
+            case 'move':{
+                alert(action)
+                break;
+            }
+            case 'rename':{
+                alert(action)
+                break;
+            }
+            case 'delete':{
+                alert(action)
+                var z = `${path}`+"\\"+`${name}`
+                alert(z)
+                let joined  = z.split('"').join('')
+                alert('join',joined)
+                unlinkFile(joined)
+                break;
+            }
+            default:{
+                alert(action)
+                break;
+            }
         }
     }
+
     return (<table>
         <tbody>
             <tr onClick={onBack}>
@@ -22,10 +42,28 @@ export const FilesViewer = ({files, onBack, onOpen}) => {
             {
                 files.map(({name, directory, size})=> {
                     return (
-                        <tr onClick={(e)=>handleClick(e,name, directory)}>
-                            <td>{name}</td>
-                            <td>{size}</td>
-                        </tr>
+                        <>
+                        <ContextMenuTrigger id={name+directory+size}>
+                            <tr onClick={(e)=>directory && onOpen(name)}>
+                                <td>{name}</td>
+                                <td>{size}</td>
+                            </tr>
+                        </ContextMenuTrigger>
+                        <ContextMenu id={name+directory+size}>
+                            <MenuItem onClick={()=>{handleAction('copy',name)}}>
+                                Copy
+                            </MenuItem>
+                            <MenuItem onClick={()=>handleAction('move',name)}>
+                                Move
+                            </MenuItem>
+                            <MenuItem onClick={()=>handleAction('rename',name)}>
+                                Rename
+                            </MenuItem>
+                            <MenuItem onClick={()=>handleAction('delete',name)}>
+                                Delete
+                            </MenuItem>
+                        </ContextMenu>
+                        </>
                     )
                 })
             }

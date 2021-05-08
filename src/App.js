@@ -45,7 +45,7 @@ function App() {
     <div className="App">
       {path}
       <input value={searchString} onChange={e => setSearchString(e.target.value)}/>
-      <FilesViewer files={filteredFiles} onBack={onBack} onOpen={onOpen}/>
+      <FilesViewer files={filteredFiles} onBack={onBack} onOpen={onOpen} path={path}/>
     </div>
   );
 }
