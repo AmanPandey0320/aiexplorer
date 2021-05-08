@@ -1,7 +1,12 @@
-import React, {useState, useMemo} from 'react';
-import { FilesViewer } from './FilesViewer';
+import './App.css';
+import React, {useState, useMemo,useContext,useEffect} from 'react';
+import TopBar from './components/topbar';
+import FilesViewer from './fileMain'
 import { searchFilter } from './search';
-const fs = window.require('fs')
+import { FileContext } from "./fileContext";
+
+const fs = window.require('fs-extra')
+const mime=window.require('mime')
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
 
@@ -14,7 +19,9 @@ const formatSize = (size) => {
 
 function App() {
   const [path, setPath] = useState(app.getAppPath());
-  const files = useMemo(()=>fs.readdirSync(path).map(file => {
+  const {togle} =  useContext(FileContext);
+ 
+  const files = useMemo(()=>fs.readdirSync(path).map((file) => {
     const stats = fs.statSync(pathModule.join(path, file))
     return {
       name: file,
@@ -27,7 +34,8 @@ function App() {
       return a.name.localeCompare(b.name)
     }
     return a.directory ? -1:1
-  }),[path])
+  })
+  ,[path,togle])
 
   const onBack = () => {
     setPath(pathModule.dirname(path))
@@ -40,11 +48,15 @@ function App() {
   const filteredFiles = files.filter(s=>searchFilter(s.name,searchString))
   
   return (
+    
+
+    
     <div className="App">
-      {path}
-      <input value={searchString} onChange={e => setSearchString(e.target.value)}/>
-      <FilesViewer files={filteredFiles} onBack={onBack} onOpen={onOpen} path={path}/>
+      <TopBar path={path} onBack={onBack} searchString={searchString} setSearchString={setSearchString}/>
+      <br/>
+      <FilesViewer files={filteredFiles} path={path} onBack={onBack} onOpen={onOpen}/>
     </div>
+   
   );
 }
 
