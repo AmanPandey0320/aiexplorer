@@ -1,22 +1,88 @@
-import FileTree from './components/fileTree';
-import FileMain from './components/fileView';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles =  makeStyles( theme => ({
-    main:{
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-evenly'
+import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
+import { deleteFile, unlinkFile } from "./contextMenuActions";
+const electron = window.require('electron');
+const shell = electron.shell;
+export const FilesViewer = ({files, onBack, onOpen, path}) => {
+      const openFile=(nome)=>{
+         try{ shell.openPath(path+'/'+ nome);}
+         catch(err){
+             console.log(err);
+         };
+       }
+  
+    const handleAction = (action,name) => {
+        switch(action){
+            case 'copy':{
+                alert(action)
+                break;
+            }
+            case 'move':{
+                alert(action)
+                break;
+            }
+            case 'rename':{
+                alert(action)
+                break;
+            }
+            case 'delete':{
+                alert(action)
+                var z = `${path}`+"\\"+`${name}`
+                alert(z)
+                let joined  = z.split('"').join('')
+                alert('join',joined)
+                unlinkFile(joined)
+                break;
+            }
+            default:{
+                alert(action)
+                break;
+            }
+        }
     }
-    
-}));
 
-export const FilesViewer = ({files, onBack, onOpen}) => {
-    const classes = useStyles();
-    return (
-        <div className={classes.main}>
-            <FileTree files={files} onBack={onBack} onOpen={onOpen} />
-            <FileMain files={files} onBack={onBack} onOpen={onOpen} />
-        </div>
-    )
+
+    return (<table>
+        <tbody>
+            <tr onClick={onBack}>
+                <td>Back</td>
+            </tr>
+            {
+                files.map(({name, directory, size,type})=> {
+                    return (
+
+//                         <tr onClick={()=>directory?onOpen(name):openFile(name)}>
+//                             <td>{name}</td>
+//                             <td>{size}</td>
+//                            { !directory && <td>{type}</td>}
+//                         </tr>
+
+                        <>
+                        <ContextMenuTrigger id={name+directory+size}>
+                            <tr onClick={()=>directory?onOpen(name):openFile(name)}>
+                                <td>{name}</td>
+                                <td>{size}</td>
+                                { !directory && <td>{type}</td>}
+                            </tr>
+                        </ContextMenuTrigger>
+                        <ContextMenu id={name+directory+size}>
+                            <MenuItem onClick={()=>{handleAction('copy',name)}}>
+                                Copy
+                            </MenuItem>
+                            <MenuItem onClick={()=>handleAction('move',name)}>
+                                Move
+                            </MenuItem>
+                            <MenuItem onClick={()=>handleAction('rename',name)}>
+                                Rename
+                            </MenuItem>
+                            <MenuItem onClick={()=>handleAction('delete',name)}>
+                                Delete
+                            </MenuItem>
+                        </ContextMenu>
+                        </>
+
+                    )
+                })
+            }
+        </tbody>
+    </table>)
 }

@@ -1,6 +1,10 @@
 import './App.css';
 import React, {useState, useMemo} from 'react';
 import { FilesViewer } from './FilesViewer';
+
+const fs = window.require('fs-extra')
+const mime=window.require('mime')
+
 import { searchFilter } from './search';
 import TopBar from './components/topbar';
 
@@ -18,12 +22,13 @@ const formatSize = (size) => {
 
 function App() {
   const [path, setPath] = useState(app.getAppPath());
-  const files = useMemo(()=>fs.readdirSync(path).map(file => {
+  const files = useMemo(()=>fs.readdirSync(path).map((file) => {
     const stats = fs.statSync(pathModule.join(path, file))
     return {
       name: file,
-      size: stats.isFile() ? formatSize(stats.size ?? 0) : null,
-      directory: stats.isDirectory(),
+       size: stats.isFile() ? formatSize(stats.size ?? 0) : null,
+       directory: stats.isDirectory(),
+       type:mime.getType(file)
     }
   })
   .sort((a,b)=>{
@@ -31,7 +36,8 @@ function App() {
       return a.name.localeCompare(b.name)
     }
     return a.directory ? -1:1
-  }),[path])
+  })
+  ,[path])
 
   const onBack = () => {
     setPath(pathModule.dirname(path))
@@ -41,8 +47,10 @@ function App() {
   }
 
   const [searchString, setSearchString] = useState('');
+
   const filteredFiles = files.filter(s=>searchFilter(s.name,searchString))
   
+
   return (
     <div className="App">
       <TopBar path={path} onBack={onBack} searchString={searchString} setSearchString={setSearchString}/>
