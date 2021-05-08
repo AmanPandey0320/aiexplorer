@@ -4,15 +4,6 @@ import { deleteFile, unlinkFile } from "./contextMenuActions";
 const electron = window.require('electron');
 const shell = electron.shell;
 
-
-
-
-export const FilesViewer = ({files,path, onBack, onOpen}) => {
- 
-
-
-
-
 export const FilesViewer = ({files, onBack, onOpen, path}) => {
       const openFile=(nome)=>{
          try{ shell.openPath(path+'/'+ nome);}

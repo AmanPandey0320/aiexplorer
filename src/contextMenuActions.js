@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = window.require('fs')
 export const renameFile = (path, newPath) => 
   new Promise((res, rej) => {
     fs.rename(path, newPath, (err, data) =>
@@ -25,8 +25,6 @@ export const unlinkFile = path => {
         : res(data));
   });
 }
-
-
 
 export const moveFile = (path, newPath, flags) =>
     renameFile(path, newPath)
