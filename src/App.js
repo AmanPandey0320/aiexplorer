@@ -2,6 +2,8 @@ import './App.css';
 import React, {useState, useMemo} from 'react';
 import { FilesViewer } from './FilesViewer';
 import { searchFilter } from './search';
+import TopBar from './components/topbar';
+
 const fs = window.require('fs')
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
@@ -43,8 +45,7 @@ function App() {
   
   return (
     <div className="App">
-      {path}
-      <input value={searchString} onChange={e => setSearchString(e.target.value)}/>
+      <TopBar path={path} onBack={onBack} searchString={searchString} setSearchString={setSearchString}/>
       <FilesViewer files={filteredFiles} onBack={onBack} onOpen={onOpen}/>
     </div>
   );
