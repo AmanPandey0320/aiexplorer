@@ -1,11 +1,6 @@
 
 import {useContext} from 'react'
-import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
-import { deleteFile, unlinkFile ,copyFile} from "./contextMenuActions";
 import { FileContext } from "./fileContext";
-const fs = window.require('fs')
-const electron = window.require('electron');
-const shell = electron.shell;
 //export const FilesViewer = ({files,path, onBack, onOpen}) => {
 import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
 import { deleteFile, unlinkFile } from "./contextMenuActions";
@@ -15,6 +10,7 @@ import { SiJavascript } from 'react-icons/si'
 import Grid from '@material-ui/core/Grid';
 import useStyles from './styles/fileView.style';
 import Paper from '@material-ui/core/Paper'
+const fs = window.require('fs')
 const electron = window.require('electron');
 const shell = electron.shell;
 export const FilesViewer = ({files, onBack, onOpen, path}) => {
