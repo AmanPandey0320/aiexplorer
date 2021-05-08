@@ -1,19 +1,23 @@
-
+import {useContext} from 'react'
 import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
-import { deleteFile, unlinkFile } from "./contextMenuActions";
+import { deleteFile, unlinkFile ,copyFile} from "./contextMenuActions";
+import { FileContext } from "./fileContext";
+const fs = window.require('fs')
 const electron = window.require('electron');
 const shell = electron.shell;
 
 
 
 
-export const FilesViewer = ({files,path, onBack, onOpen}) => {
+//export const FilesViewer = ({files,path, onBack, onOpen}) => {
  
 
 
 
 
 export const FilesViewer = ({files, onBack, onOpen, path}) => {
+      const {pathe,setPath} = useContext(FileContext);
+      console.log(pathe);
       const openFile=(nome)=>{
          try{ shell.openPath(path+'/'+ nome);}
          catch(err){
@@ -24,6 +28,9 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
     const handleAction = (action,name) => {
         switch(action){
             case 'copy':{
+                let str=`${path}\\${name}`
+                setPath(str)
+                console.log(pathe);
                 alert(action)
                 break;
             }
@@ -43,6 +50,12 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                 alert('join',joined)
                 unlinkFile(joined)
                 break;
+            }
+            case 'paste':{
+                alert(action)
+               // copyFile(pathe,path);
+                // alert("copied");
+                fs.copyFile(pathe,path,(err)=>{console.log(err);});
             }
             default:{
                 alert(action)
@@ -88,6 +101,9 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                             <MenuItem onClick={()=>handleAction('delete',name)}>
                                 Delete
                             </MenuItem>
+                           { pathe!='' && <MenuItem onClick={()=>handleAction('paste',name)}>
+                                Paste
+                            </MenuItem>}
                         </ContextMenu>
                         </>
 

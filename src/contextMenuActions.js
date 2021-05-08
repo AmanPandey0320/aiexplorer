@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = window.require('fs')
 export const renameFile = (path, newPath) => 
   new Promise((res, rej) => {
     fs.rename(path, newPath, (err, data) =>
@@ -7,10 +7,10 @@ export const renameFile = (path, newPath) =>
         : res(data));
   });
 
-export const copyFile = (path, newPath, flags) =>
+export const copyFile = (path, newPath) =>
   new Promise((res, rej) => {
     const readStream = fs.createReadStream(path),
-    writeStream = fs.createWriteStream(newPath, {flags});
+    writeStream = fs.createWriteStream(newPath);
     readStream.on("error", rej);
     writeStream.on("error", rej);
     writeStream.on("finish", res);

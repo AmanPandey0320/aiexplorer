@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import FileContextProvider from './fileContext';
 
 ReactDOM.render(
   <React.StrictMode>
+    <FileContextProvider>
     <App />
+    </FileContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

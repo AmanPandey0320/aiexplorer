@@ -1,11 +1,14 @@
 import './App.css';
 import React, {useState, useMemo} from 'react';
 import { FilesViewer } from './FilesViewer';
+import { searchFilter } from './search';
+
+
 
 const fs = window.require('fs-extra')
 const mime=window.require('mime')
 
-import { searchFilter } from './search';
+
 
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
@@ -50,6 +53,9 @@ function App() {
   
 
   return (
+    
+
+    
     <div className="App">
       {path}
       <input value={searchString} onChange={e => setSearchString(e.target.value)}/>
@@ -57,6 +63,7 @@ function App() {
       <FilesViewer files={filteredFiles} path={path} onBack={onBack} onOpen={onOpen}/>
 
     </div>
+   
   );
 }
 
