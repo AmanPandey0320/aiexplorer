@@ -1,11 +1,12 @@
 import './App.css';
-import React, {useState, useMemo} from 'react';
-// import { FilesViewer } from './FilesViewer';
-import { searchFilter } from './search';
+import React, {useState, useMemo,useContext,useEffect} from 'react';
 import TopBar from './components/topbar';
 import FilesViewer from './fileMain'
+import { searchFilter } from './search';
+import { FileContext } from "./fileContext";
+
+const fs = window.require('fs-extra')
 const mime=window.require('mime')
-const fs = window.require('fs')
 const pathModule = window.require('path')
 const {app} = window.require('@electron/remote');
 
@@ -19,6 +20,8 @@ const formatSize = (size) => {
 
 function App() {
   const [path, setPath] = useState(app.getAppPath());
+  const {togle} =  useContext(FileContext);
+ 
   const files = useMemo(()=>fs.readdirSync(path).map((file) => {
     const stats = fs.statSync(pathModule.join(path, file))
     return {
@@ -34,7 +37,7 @@ function App() {
     }
     return a.directory ? -1:1
   })
-  ,[path])
+  ,[path,togle])
 
   const onBack = () => {
     setPath(pathModule.dirname(path))
