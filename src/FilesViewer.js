@@ -181,7 +181,7 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                                             Delete
                                         </MenuItem>
                                         { 
-                                            pathe!='' && <MenuItem onClick={()=>handleAction('paste',name)}>
+                                            pathe.path && pathe.path!='' && <MenuItem onClick={()=>handleAction('paste',name)}>
                                                 Paste
                                             </MenuItem>
                                         }
