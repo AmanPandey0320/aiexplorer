@@ -13,6 +13,7 @@ import MenuListItem from '@material-ui/core/MenuItem';
 import { renderIconSwitch } from './logic/file'
 import { getOperatingSystem } from './logic/osType';
 import { MdContentPaste } from 'react-icons/md'
+import { BiFolderPlus } from 'react-icons/bi'
 const fs = window.require('fs')
 const electron = window.require('electron');
 const shell = electron.shell;
@@ -33,6 +34,41 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
   
        const handleAction = (action,name) => {
         switch(action){
+            case 'mkdir':{
+                smalltalk
+                .prompt('Create Folder', 'Enter name of folder')
+                .then((value)=>{
+                    let p
+                    let ext=value.split('.')[0]
+                    if(ext=='')
+                    {
+                        alert("entered invalid name");
+                        return;
+                    }
+                    if(getOperatingSystem(window)==='win'){
+                       
+                        p = path+'\\'+ext;
+                            
+                    }
+                    else{
+                        p = path+'\\'+ext;
+                        p = p.split("\\").join("/");
+                    }
+                    fs.mkdir(p , function(err) {
+                        alterTogle();
+                        if (err) {
+                            alert("Can not make folder of this name")
+                            return;
+                        } else {
+                            console.log("New directory successfully created.")
+                        }
+                        })
+                })
+                
+ 
+               
+                break;
+            }
             case 'copy':{
                 setMove(false);
                 let str=`${path}\\${name}`
@@ -86,11 +122,11 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                 
                 
                 
-                alert(action)
+                
                 break;
             }
             case 'delete':{
-                alert(action)
+                
                 let joined;
                 if(getOperatingSystem(window) === 'win'){
                     var z = `${path}`+"\\"+`${name}`
@@ -101,12 +137,12 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                     joined = joined.split("\\").join("/");
                 }
                
-                alert('join',joined)
+                
                 unlinkFile(joined).then(()=>{alterTogle();})
                 break;
             }
             case 'paste':{
-                alert(action)
+               // alert(action)
                // copyFile(pathe,path);
                 // alert("copied");
                 let st;
@@ -138,12 +174,15 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
     const [show,setShow] = useState(false)
 
     return (
-        <div onClick={e => {setShow(false)}} onContextMenu={e => { e.preventDefault(); setShow(true)}} style={{height:'100vh'}} className={classes.main}> 
+        <div onClick={e => {setShow(false)}} onContextMenu={e => { e.preventDefault();   setShow(true)}} style={{height:'100vh'}} className={classes.main}> 
             {
                 show && <FormControl className={classes.FormControl}>
                             <div>
-                                <Paper>
+                               {pathe.path && pathe.path!='' && <Paper>
                                     <MenuListItem onClick={ e => {handleAction('paste')}} ><MdContentPaste/>&nbsp;Paste here</MenuListItem>
+                                </Paper>}
+                                <Paper>
+                                    <MenuListItem onClick={ e => {handleAction('mkdir')}} ><BiFolderPlus/>&nbsp;New folder</MenuListItem>
                                 </Paper>
                             </div>
                         </FormControl>
@@ -179,6 +218,9 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                                         </MenuItem>
                                         <MenuItem onClick={()=>handleAction('delete',name)}>
                                             Delete
+                                        </MenuItem>
+                                        <MenuItem onClick={()=>handleAction('mkdir',name)}>
+                                            New folder
                                         </MenuItem>
                                         { 
                                             pathe.path && pathe.path!='' && <MenuItem onClick={()=>handleAction('paste',name)}>
