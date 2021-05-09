@@ -33,8 +33,6 @@ export const unlinkFile = path => {
   });
 }
 
-
-
 export const moveFile = (path, newPath, flags) =>
     renameFile(path, newPath)
     .catch(e => {
