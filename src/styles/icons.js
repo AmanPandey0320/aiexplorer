@@ -1,4 +1,4 @@
-import { FcFolder,FcFile,FcImageFile, FcAudioFile,FcVideoFile } from "react-icons/fc";
+import { FcFolder,FcFile,FcImageFile, FcAudioFile,FcVideoFile,FcOpenedFolder } from "react-icons/fc";
 import { VscJson } from 'react-icons/vsc';
 import { SiJavascript,SiCplusplus,SiMicrosoftword } from 'react-icons/si';
 import { AiFillFileMarkdown,AiFillFileText } from 'react-icons/ai';
@@ -14,5 +14,10 @@ export default {
     video:<FcVideoFile size="4em"/>,
     text:<AiFillFileText color="#02ccf5" size="4em"/>,
     cpp:<SiCplusplus color="#792bff" size="4em"/>,
-    docx:<SiMicrosoftword color="#0073ff" size="4em"/>
+    docx:<SiMicrosoftword color="#0073ff" size="4em"/>,
+    tree:{
+        folderClose:<FcFolder/>,
+        folderOpen:<FcOpenedFolder/>,
+        file:<FcFile/>
+    }
 }
