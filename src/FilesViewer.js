@@ -1,5 +1,5 @@
 
-import {useContext} from 'react'
+import {useContext, useState} from 'react'
 import { FileContext } from "./fileContext";
 //export const FilesViewer = ({files,path, onBack, onOpen}) => {
 import { ContextMenu, ContextMenuTrigger, MenuItem } from "react-contextmenu"
@@ -8,8 +8,11 @@ import Icons from './styles/icons'
 import Grid from '@material-ui/core/Grid';
 import useStyles from './styles/fileView.style';
 import Paper from '@material-ui/core/Paper';
+import FormControl from'@material-ui/core/FormControl';
+import MenuListItem from '@material-ui/core/MenuItem';
 import { renderIconSwitch } from './logic/file'
 import { getOperatingSystem } from './logic/osType';
+import { MdContentPaste } from 'react-icons/md'
 const fs = window.require('fs')
 const electron = window.require('electron');
 const shell = electron.shell;
@@ -132,9 +135,19 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
     }
 
     const classes = useStyles();
+    const [show,setShow] = useState(false)
 
     return (
-        <div  className={classes.main}> 
+        <div onClick={e => {setShow(false)}} onContextMenu={e => { e.preventDefault(); setShow(true)}} style={{height:'100vh'}} className={classes.main}> 
+            {
+                show && <FormControl className={classes.FormControl}>
+                            <div>
+                                <Paper>
+                                    <MenuListItem onClick={ e => {handleAction('paste')}} ><MdContentPaste/>&nbsp;Paste here</MenuListItem>
+                                </Paper>
+                            </div>
+                        </FormControl>
+            }
             <Grid  container xs={12}>
                     {
                         files.map(({name, directory, size,type})=> {
