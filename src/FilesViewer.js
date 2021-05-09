@@ -11,7 +11,8 @@ import { AiFillFileMarkdown } from 'react-icons/ai'
 import Icons from './styles/icons'
 import Grid from '@material-ui/core/Grid';
 import useStyles from './styles/fileView.style';
-import Paper from '@material-ui/core/Paper'
+import Paper from '@material-ui/core/Paper';
+import { renderIconSwitch } from './logic/file'
 const fs = window.require('fs')
 const electron = window.require('electron');
 const shell = electron.shell;
@@ -109,45 +110,8 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
 
     const classes = useStyles();
 
-    const renderIconSwitch = (type) => {
-
-        if(type === null) return Icons.file;
-
-        const sup_type = type.split('/')[0];
-        const sub_type = type.split('/')[1];
-
-        if(sup_type === 'application' ){
-
-            switch (sub_type) {
-                case "javascript": return Icons.js
-                case "json": return Icons.json
-                case "vnd.openxmlformats-officedocument.wordprocessingml.document" : return Icons.docx
-            
-                default: return Icons.file
-            }
-
-        }else if( sup_type === 'audio' ){
-            return Icons.audio
-        }else if( sup_type === 'image' ){
-            return Icons.img
-
-        }else if( sup_type === 'text' ){
-            switch (sub_type) {
-                case "markdown" : return Icons.md
-                case "x-c": return Icons.cpp
-            
-                default:return Icons.text
-            }
-
-        }else if( sup_type === 'video' ){
-            return Icons.video
-        }else{
-            return Icons.file
-        }
-        
-    }
     return (
-        <div className={classes.main}> 
+        <div  className={classes.main}> 
             <Grid  container xs={12}>
                     {
                         files.map(({name, directory, size,type})=> {
