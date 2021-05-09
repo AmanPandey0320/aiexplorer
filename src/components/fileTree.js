@@ -4,12 +4,19 @@ import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Icons from '../styles/icons';
 import FolderNode from './folder.node';
-const pathModule = window.require('path')
-
+const pathModule = window.require('path');
+const electron = window.require('electron');
+const shell = electron.shell;
 
 const FileTree = (props) => {
     const {files, onBack, onOpen, path} = props;
     const classes = useStyles();
+    const openFile=(nome)=>{
+        try{ shell.openPath(path+'/'+ nome);}
+        catch(err){
+            console.log(err);
+        };
+    }
     return ( 
         <TreeView
             className={classes.tree}
@@ -26,7 +33,7 @@ const FileTree = (props) => {
                             </TreeItem>
                         )
                     }else{
-                        return <TreeItem key={index} nodeId={index} label={name}/>
+                        return <TreeItem onClick={ () => { openFile(name) }} key={index} nodeId={index} label={name}/>
                     }
                 })
             }
