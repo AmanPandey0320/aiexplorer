@@ -49,8 +49,6 @@ function App() {
   
   return (
     
-
-    
     <div className="App">
       <TopBar path={path} onBack={onBack} searchString={searchString} setSearchString={setSearchString}/>
       <br/>

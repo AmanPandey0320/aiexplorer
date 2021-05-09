@@ -8,6 +8,7 @@ import Icons from './styles/icons'
 import Grid from '@material-ui/core/Grid';
 import useStyles from './styles/fileView.style';
 import Paper from '@material-ui/core/Paper'
+import { getOperatingSystem } from './logic/osType';
 const fs = window.require('fs')
 const electron = window.require('electron');
 const shell = electron.shell;
@@ -18,10 +19,12 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
         const {pathe,setPath,move, setMove,alterTogle} = useContext(FileContext);
         console.log(shell);
         const openFile=(nome)=>{
-        try{ shell.openPath(path+'/'+ nome);}
-        catch(err){
-            console.log(err);
-        };
+            try{ 
+                shell.openPath(path+'/'+ nome);
+            }
+            catch(err){
+                console.log(err);
+            };
         }
   
        const handleAction = (action,name) => {
@@ -52,11 +55,22 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                             alert("entered invalid name");
                             return;
                         }
-                        fs.rename(path+'\\'+name,path+'\\'+value, (err)=>{
+                        let p,v;
+                        if(getOperatingSystem(window)==='win'){
+                            p = path+'\\'+name;
+                            v = path+'\\'+value;
+                        }
+                        else{
+                            p = path+'\\'+ name
+                            v = path+'\\'+value;
+                            p = p.split("\\").join("/");
+                            v = v.split("\\").join("/");
+                        }
+                        fs.rename(p,v, (err)=>{
                             alterTogle();
                             if(err){
                                console.log(err);
-                                console.log(path+'\\'+name,path+'\\'+value+ext);
+                                console.log(p,v+ext);
                                 alert("entered invalid "); 
                                 return; 
                             }
@@ -73,19 +87,33 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
             }
             case 'delete':{
                 alert(action)
-                var z = `${path}`+"\\"+`${name}`
-                alert(z)
-                let joined  = z.split('"').join('')
+                let joined;
+                if(getOperatingSystem(window) === 'win'){
+                    var z = `${path}`+"\\"+`${name}`
+                    alert(z)
+                    joined  = z.split('"').join('')
+                }
+                else{
+                    joined = joined.split("\\").join("/");
+                }
+               
                 alert('join',joined)
                 unlinkFile(joined).then(()=>{alterTogle();})
-                               
                 break;
             }
             case 'paste':{
                 alert(action)
                // copyFile(pathe,path);
                 // alert("copied");
-                const st=path+'\\'+pathe.name
+                let st;
+                if(getOperatingSystem(window) === 'win'){
+                    st=path+'\\'+pathe.name
+                }
+                else{
+                    st=path+'\\'+pathe.name
+                    st = st.split("\\").join("/")
+                    pathe.path = pathe.path.split("\\").join("/");
+                }
                 fs.copyFile(pathe.path,st,(err)=>{console.log(err); alterTogle()});
                 if(move)
                 {
@@ -108,8 +136,8 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
 
         if(type === null) return Icons.file;
 
-        const sup_type = type.split('/')[0];
-        const sub_type = type.split('/')[1];
+        const sup_type = type?.split('/')[0];
+        const sub_type = type?.split('/')[1];
 
         if(sup_type === 'application' ){
 
@@ -149,7 +177,7 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                             return (
                                 <Grid className={classes.item}>
                                 <ContextMenuTrigger id={name+directory+size}>
-                                    <div onClick={()=>directory?onOpen(name):openFile(name)} item xs={3} >
+                                    <div onClick={()=>directory?onOpen(name):null} onDoubleClick={()=>openFile(name)} item xs={3} >
                                         <div className={classes.folderic}>
                                             {directory && Icons.folder}
                                             {!directory && <div>
@@ -159,30 +187,30 @@ export const FilesViewer = ({files, onBack, onOpen, path}) => {
                                             </div> }
                                         </div>
                                         <div className={classes.name} >{name}</div>
-                                    
-                                        
                                     </div>
                                 </ContextMenuTrigger>
                                 <ContextMenu id={name+directory+size}>
                                     <Paper>
-                                    <MenuItem onClick={()=>{handleAction('copy',name)}}>
-                                Copy
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleAction('move',name)}>
-                                Move
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleAction('rename',name)}>
-                                Rename
-                            </MenuItem>
-                            <MenuItem onClick={()=>handleAction('delete',name)}>
-                                Delete
-                            </MenuItem>
-                           { pathe!='' && <MenuItem onClick={()=>handleAction('paste',name)}>
-                                Paste
-                                </MenuItem>}
-                            </Paper>
+                                        <MenuItem onClick={()=>{handleAction('copy',name)}}>
+                                            Copy
+                                        </MenuItem>
+                                        <MenuItem onClick={()=>handleAction('move',name)}>
+                                            Move
+                                        </MenuItem>
+                                        <MenuItem onClick={()=>handleAction('rename',name)}>
+                                            Rename
+                                        </MenuItem>
+                                        <MenuItem onClick={()=>handleAction('delete',name)}>
+                                            Delete
+                                        </MenuItem>
+                                        { 
+                                            pathe!='' && <MenuItem onClick={()=>handleAction('paste',name)}>
+                                                Paste
+                                            </MenuItem>
+                                        }
+                                    </Paper>
                                 </ContextMenu>
-                                </Grid>
+                            </Grid>
 
                             )
                         })

@@ -5,15 +5,13 @@ import useStyles from '../styles/topbar.styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { FcSearch,FcOpenedFolder } from 'react-icons/fc';
 import { FaArrowCircleLeft } from 'react-icons/fa';
-import IconButton from '@material-ui/core/IconButton'
-
 
 const TopBar = (props) => {
     const { path , searchString, setSearchString,onBack } = props;
     const classes = useStyles();
 
     return ( 
-        <div>
+        <div style={{paddingTop:"10px"}}>
             <FormControl className={classes.formControl} >
                 <span onClick={onBack} className={classes.backic} ><FaArrowCircleLeft color="#3f50b5" size="1.5em" /></span>
                 <span className={classes.location} ><span className={classes.fileic} ><FcOpenedFolder/></span><span>{path}</span></span>
